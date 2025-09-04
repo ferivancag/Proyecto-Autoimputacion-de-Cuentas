@@ -1,0 +1,7 @@
+streamlit>=1.37
+pandas>=2.2
+openpyxl
+xlsxwriter
+rapidfuzz>=3.9
+sentence-transformers>=3.0
+# torch>=2.2
