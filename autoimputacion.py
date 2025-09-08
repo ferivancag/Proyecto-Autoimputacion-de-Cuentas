@@ -91,8 +91,10 @@ while x < filas:
     x+=1
     if pd.isna(name):
         continue
-    else:
+    elif len(name) >2: 
         namelist.append(name)
+    else:
+        continue
 namelist = list(set(namelist))
 
 with st.container(border=True):
@@ -109,8 +111,8 @@ accounts_df_mejorado = pd.DataFrame(columns=["Accounts Principales", "Accounts S
 
 accountlist_banks = []
 accountlist_without_banks = []
-accountlist_banks = accounts_df[accounts_df["Type"]=="Bank"]["Account"].tolist()
-accountlist_without_banks = accounts_df[accounts_df["Type"]!="Bank"]["Account"].tolist()
+accountlist_banks = accounts_df[(accounts_df["Type"]=="Bank") |  (accounts_df["Type"]=="Credit Card")]["Account"].tolist()
+accountlist_without_banks = accounts_df[(accounts_df["Type"]!="Bank") & (accounts_df["Type"]!="Credit Card")]["Account"].tolist()
 
 
 #Armado de la cuenta principal y la secundaria
@@ -212,7 +214,7 @@ df_archivos_subidos = pd.concat(lista_de_archivos, ignore_index=True)
 Sumatoria_archivos_subidos = round(df_archivos_subidos["Amount"].sum(), 2)
 
 if Sumatoria_archivos_subidos - Variacion_Saldo != 0:
-    st.warning(f"La Variacion de los Movimientos debe ser igual a la diferencia entre el Saldo Final y el Saldo Inicial, la diferencia es de {Sumatoria_archivos_subidos - Variacion_Saldo}, la sumatoria de los movimientos de los archivos subidos son {Sumatoria_archivos_subidos}")
+    st.warning(f"La Variacion de los Movimientos debe ser igual a la diferencia entre el Saldo Final y el Saldo Inicial, la diferencia es de {Sumatoria_archivos_subidos - Variacion_Saldo}, la sumatoria de los movimientos de los archivos subidos es de {Sumatoria_archivos_subidos}")
     st.stop()
 
 
@@ -221,7 +223,7 @@ df_name_filtro.reset_index(inplace=True)
 
 #usar IA con tensores
 model = SentenceTransformer("all-MiniLM-L6-v2")
-emb_accounts = model.encode(accounts_df["Account"].tolist(), convert_to_tensor=True)
+emb_memos_query = model.encode(lista_de_memos, convert_to_tensor=True)
 
 #Armado de los deposits
 df_Deposits = pd.DataFrame(columns= ["Date", "Vendor", "Account", "Description", "Check", "Amount ABS", "Revisar"])
@@ -251,9 +253,9 @@ for i in df_Deposits["Description"]:
         x+=1
     else:
             emb_memo = model.encode(i, convert_to_tensor=True)
-            Escores_de_coseno = util.cos_sim(emb_memo,emb_accounts)[0]
+            Escores_de_coseno = util.cos_sim(emb_memo,emb_memos_query)[0]
             Index_del_mejorcoseno = Escores_de_coseno.argmax().item()
-            df_Deposits.at[x, "Account"] = accounts_df["Account"].iloc[Index_del_mejorcoseno]
+            df_Deposits.at[x, "Account"] = df_nuevo_memo["Split"].iloc[Index_del_mejorcoseno]
             df_Deposits.at[x, "Revisar"] = "Revisar"
             x+=1
 
@@ -299,9 +301,9 @@ for i in df_Checks["Description"]:
         x+=1
     else:
         emb_memo = model.encode(i, convert_to_tensor=True)
-        Escores_de_coseno = util.cos_sim(emb_memo,emb_accounts)[0]
+        Escores_de_coseno = util.cos_sim(emb_memo,emb_memos_query)[0]
         Index_del_mejorcoseno = Escores_de_coseno.argmax().item()
-        df_Checks.at[x, "Account"] = accounts_df["Account"].iloc[Index_del_mejorcoseno]
+        df_Checks.at[x, "Account"] = df_nuevo_memo["Split"].iloc[Index_del_mejorcoseno]
         df_Checks.at[x, "Revisar"] = "Revisar"
         x+=1
 
@@ -341,9 +343,9 @@ for i in df_Creditcard["Description"]:
         x+=1
     else:
         emb_memo = model.encode(i, convert_to_tensor=True)
-        Escores_de_coseno = util.cos_sim(emb_memo,emb_accounts)[0]
+        Escores_de_coseno = util.cos_sim(emb_memo,emb_memos_query)[0]
         Index_del_mejorcoseno = Escores_de_coseno.argmax().item()
-        df_Creditcard.at[x, "Account"] = accounts_df["Account"].iloc[Index_del_mejorcoseno]
+        df_Creditcard.at[x, "Account"] = df_nuevo_memo["Split"].iloc[Index_del_mejorcoseno]
         df_Creditcard.at[x, "Revisar"] = "Revisar"
         x+=1
 
