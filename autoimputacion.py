@@ -91,7 +91,7 @@ while x < filas:
     x+=1
     if pd.isna(name):
         continue
-    elif len(name) >2: 
+    elif len(name) >3: 
         namelist.append(name)
     else:
         continue
