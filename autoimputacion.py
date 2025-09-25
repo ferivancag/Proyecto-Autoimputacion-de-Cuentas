@@ -126,6 +126,7 @@ for i in accountlist_without_banks:
         x+=1
     else:
         accounts_df_mejorado.at[x, "Accounts Principales"] = i 
+        accounts_df_mejorado.at[x, "Accounts Secundarias"] = "☠︎"
         x+= 1
 
 
