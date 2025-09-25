@@ -146,11 +146,11 @@ for i in namelist:
         similitud, bestscore, index = process.extractOne(query=j, scorer= fuzz.partial_ratio, choices= accountlist_banks)
         similitud2, bestscore2, index2 = process.extractOne(query=j, scorer= fuzz.WRatio, choices=accounts_df_mejorado["Accounts Principales"].tolist())
         similitud3, bestscore3, index3 = process.extractOne(query=j, scorer= fuzz.WRatio, choices=accounts_df_mejorado["Accounts Secundarias"].tolist())
-        if bestscore > 80:
+        if bestscore > 85:
             continue
         elif bestscore2==100:
             filtrados.append(similitud2)
-        elif bestscore3>80:
+        elif bestscore3>85:
             filtrados.append(accounts_df_mejorado["Accounts Principales"].iloc[index3])
         else:
             filtrados.append(j)
@@ -175,7 +175,7 @@ df_memo_filtro = df_memo_filtro.reset_index(drop = True)
 x = 0
 for i in df_memo_filtro["Split"]:
     similitud, bestscore, index = process.extractOne(query=i, scorer= fuzz.partial_ratio, choices= accountlist_banks)
-    if bestscore > 80:
+    if bestscore > 85:
         x+=1
         continue
     else:
@@ -183,7 +183,7 @@ for i in df_memo_filtro["Split"]:
         similitud3, bestscore3 , index3 = process.extractOne(query=i, scorer= fuzz.WRatio, choices= accounts_df_mejorado["Accounts Secundarias"].tolist())
         if bestscore2 == 100:
             lista_de_splits.append(similitud2)
-        elif bestscore3 > 80:
+        elif bestscore3 > 85:
             lista_de_splits.append(accounts_df_mejorado["Accounts Principales"].iloc[index3])
         else:
             lista_de_splits.append(i)
@@ -242,11 +242,11 @@ for i in df_Deposits["Description"]:
     lower = str(i).lower()
     similitud1, bestscore1, index1 = process.extractOne(query= lower, scorer= fuzz.partial_ratio, choices= df_name_filtro["Name"].str.lower().tolist())
     similitud2, bestscore2, index2 = process.extractOne(query= i, scorer= fuzz.WRatio, choices= df_nuevo_memo["Memo"].tolist())
-    if bestscore1 > 80:
+    if bestscore1 > 85:
         df_Deposits.at[x, "Vendor"] = df_name_filtro["Name"].iloc[index1]
         df_Deposits.at[x, "Account"] = df_name_filtro["Split"].iloc[index1]
         x+=1
-    elif bestscore2 > 80:
+    elif bestscore2 > 85:
         df_Deposits.at[x, "Account"] = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         Split_ = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         if Split_ == "-SPLIT-":
@@ -290,11 +290,11 @@ for i in df_Checks["Description"]:
     lower = str(i).lower()
     similitud1, bestscore1, index1 = process.extractOne(query= lower, scorer= fuzz.partial_ratio, choices= df_name_filtro["Name"].str.lower().tolist())
     similitud2, bestscore2, index2 = process.extractOne(query= i, scorer= fuzz.WRatio, choices= df_nuevo_memo["Memo"].tolist())
-    if bestscore1 > 80:
+    if bestscore1 > 85:
         df_Checks.at[x, "Vendor"] = df_name_filtro["Name"].iloc[index1]
         df_Checks.at[x, "Account"] = df_name_filtro["Split"].iloc[index1]
         x+=1
-    elif bestscore2 > 80:
+    elif bestscore2 > 85:
         df_Checks.at[x, "Account"] = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         Split_ = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         if Split_ == "-SPLIT-":
@@ -332,11 +332,11 @@ for i in df_Creditcard["Description"]:
     lower = str(i).lower()
     similitud1, bestscore1, index1 = process.extractOne(query= lower, scorer= fuzz.partial_ratio, choices= df_name_filtro["Name"].str.lower().tolist())
     similitud2, bestscore2, index2 = process.extractOne(query= i, scorer= fuzz.WRatio, choices= df_nuevo_memo["Memo"].tolist())
-    if bestscore1 > 80:
+    if bestscore1 > 85:
         df_Creditcard.at[x, "Vendor"] = df_name_filtro["Name"].iloc[index1]
         df_Creditcard.at[x, "Account"] = df_name_filtro["Split"].iloc[index1]
         x+=1
-    elif bestscore2 > 80:
+    elif bestscore2 > 85:
         df_Creditcard.at[x, "Account"] = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         Split_ = df_nuevo_memo[df_nuevo_memo["Memo"] == similitud2]["Split"].iloc[0]
         if Split_ == "-SPLIT-":
