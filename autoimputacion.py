@@ -115,6 +115,20 @@ accountlist_banks = accounts_df[(accounts_df["Type"]=="Bank") |  (accounts_df["T
 accountlist_without_banks = accounts_df[(accounts_df["Type"]!="Bank") & (accounts_df["Type"]!="Credit Card")]["Account"].tolist()
 
 
+#Eliminar Vendor
+vendor_eliminado = None
+vendor_a_eliminar  =  st.text_input("Vendor a eliminar:")
+if st.button("Eliminar Vendor"):
+    vendor_eliminado = vendor_a_eliminar
+    if vendor_eliminado is not None and (vendor_eliminado != ""):
+        try:
+            namelist.remove(vendor_eliminado)
+            st.success("Se elimino correctamente.")
+        except:
+            st.error("No existe ese vendor dentro de la lista de vendors")
+    else: 
+        st.warning("No se admiten vendors vacios")
+
 #Armado de la cuenta principal y la secundaria
 x = 0
 for i in accountlist_without_banks:
